@@ -15,7 +15,9 @@ int main(int argc,char *argv[]){
 	int i = 0;
 	int arg_data_count = 0;
 	bool audio_get_list = false;
-	
+	int device_chosen = 0;
+	const PaDeviceInfo *device_info;
+	PaStreamParameters input_stream_param;
 	// Parse arguments
 	if(argc >= 1){
 		for(i = 0;i < argc;i++){
@@ -23,13 +25,11 @@ int main(int argc,char *argv[]){
 				if(strcmp(argv[i],"-list") == 0){
 					audio_get_list = true;
 				}
-				
 			} else {
 				arg_data_count = arg_data_count-1;
 			}
 		}
 	}
-
 	/// Init
 	status_message(stat_general,"SoundScale");
 	status_message(stat_general,"Using PortAudio Version:");
@@ -50,13 +50,25 @@ int main(int argc,char *argv[]){
 	// Audio Device selection. - Preformed if no device is selected;
 	if(audio_get_list == true){
 		printf("[*] Discovered %i Audio devices\n",device_num);
-		const PaDeviceInfo *device_info;
 		for(i = 0; i < device_num;i++){
-		device_info = Pa_GetDeviceInfo(i);
-		printf("[*] [%i] %s \n",i,device_info->name);
+			device_info = Pa_GetDeviceInfo(i);
+			printf("[*] [%i] %s \n",i,device_info->name);
+		}
+		// Get input and validate it.
+	} else {
+		if(device_chosen > 0 && device_chosen <= device_num){
+			input_stream_param.device = device_chosen;
+			
+		} else {
+			input_stream_param.device = Pa_GetDefaultInputDevice();
+			if(input_stream_param.device == paNoDevice){
+				status_message(stat_critical,"NO DEFAULT INPUT DEVICE, EXITING");
+				return FAILURE;
+			}
 		}
 	}
-
-
+	status_message(stat_general,"Using device:");
+	device_info = Pa_GetDeviceInfo(input_stream_param.device);
+	status_message(stat_general,(char *)device_info->name);
 	return SUCCESS;
 }
