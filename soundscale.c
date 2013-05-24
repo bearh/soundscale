@@ -8,6 +8,8 @@ int status_message(int status,char *message){
 	printf("[%c] %s\n",status_out,message);
 	return SUCCESS;
 }
+// Main deals with checking all the devices and arguments.
+// It will call another function to do the actual work.
 int main(int argc,char *argv[]){
 	//variables
 	int device_num = 0;
@@ -15,10 +17,12 @@ int main(int argc,char *argv[]){
 	int i = 0;
 	int arg_data_count = 0;
 	bool audio_get_list = false;
+	bool input_wanted = false;
 	int device_chosen = 0;
 	const PaDeviceInfo *device_info;
 	char user_select_device[8];
 	PaStreamParameters input_stream_param;
+
 	// Parse arguments
 	if(argc >= 1){
 		for(i = 0;i < argc;i++){
@@ -26,11 +30,15 @@ int main(int argc,char *argv[]){
 				if(strcmp(argv[i],"-list") == 0){
 					audio_get_list = true;
 				}
+				if(strcmp(argv[i],"-input") == 0){
+					input_wanted = true;
+				}
 			} else {
 				arg_data_count = arg_data_count-1;
 			}
 		}
 	}
+
 	/// Init
 	status_message(stat_general,"SoundScale");
 	status_message(stat_general,"Using PortAudio Version:");
@@ -55,8 +63,15 @@ int main(int argc,char *argv[]){
 			device_info = Pa_GetDeviceInfo(i);
 			printf("[*] [%i] %s \n",i,device_info->name);
 		}
-		// Get input and validate it.
-
+		if(input_wanted == true){
+			printf("[*] Please select input: ");
+			scanf("%s",user_select_device);
+			if(atoi(user_select_device) < device_num && atoi(user_select_device) >= 0){
+				device_chosen = atoi(user_select_device);
+			}
+		} else {
+			return SUCCESS;
+		}
 	} else {
 		if(device_chosen > 0 && device_chosen <= device_num){
 			input_stream_param.device = device_chosen;
