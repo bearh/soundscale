@@ -1,0 +1,5 @@
+this dir basically contains code that might be used again in the 
+future, but at the moment is unused. 
+
+I was working on a parser for a config, but I'll get around to working 
+on it at a later date.

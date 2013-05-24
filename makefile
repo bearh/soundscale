@@ -2,10 +2,10 @@
 # Makefile for Soundscale
 #
 
-SRCS =		soundscale.c
+SRCS =		src/soundscale.c 
 OUTPUT_BIN =	bin/soundscale
 
-FRAMEWORKS = 	include/portaudio/libportaudio.a \
+FRAMEWORKS = 	src/include/portaudio/libportaudio.a \
 		-framework CoreAudio \
 		-framework AudioUnit \
 	        -framework carbon \

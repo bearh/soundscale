@@ -1,6 +1,8 @@
 #include "defines.h"
 
 // For basic notes.
+// I want to use this for all text output so I can control how all output
+// is dealt with (i.e, writing to file, not showing at all, etc)
 int status_message(int status,char *message){
 	char status_chars[] = "!*?-^C";
 	char status_out;
@@ -8,6 +10,8 @@ int status_message(int status,char *message){
 	printf("[%c] %s\n",status_out,message);
 	return SUCCESS;
 }
+
+
 // Main deals with checking all the devices and arguments.
 // It will call another function to do the actual work.
 int main(int argc,char *argv[]){
@@ -27,10 +31,13 @@ int main(int argc,char *argv[]){
 	if(argc >= 1){
 		for(i = 0;i < argc;i++){
 			if(arg_data_count == 0){
+				// Prints a list of all audio devices.
 				if(strcmp(argv[i],"-list") == 0){
 					audio_get_list = true;
 				}
+				// Same as -list, but lets you select which one you use.
 				if(strcmp(argv[i],"-input") == 0){
+					audio_get_list = true;
 					input_wanted = true;
 				}
 			} else {
@@ -57,7 +64,7 @@ int main(int argc,char *argv[]){
 		return NO_AUDIO_DEVICES;
 	} 
 
-	// Audio Device selection. - Preformed if no device is selected;
+	// Audio Device selection. This can be cleaned up.
 	if(audio_get_list == true){
 		printf("[*] Discovered %i Audio devices\n",device_num);
 		for(i = 0; i < device_num;i++){
@@ -69,8 +76,9 @@ int main(int argc,char *argv[]){
 			scanf("%s",user_select_device);
 			if(atoi(user_select_device) < device_num && atoi(user_select_device) >= 0){
 				device_chosen = atoi(user_select_device);
+				input_stream_param.device = device_chosen;
 			}
-		} else {
+		} else if(input_wanted == false){
 			return SUCCESS;
 		}
 	} else {
@@ -88,5 +96,7 @@ int main(int argc,char *argv[]){
 	status_message(stat_general,"Using device:");
 	device_info = Pa_GetDeviceInfo(input_stream_param.device);
 	status_message(stat_general,(char *)device_info->name);
+	
+
 	return SUCCESS;
 }

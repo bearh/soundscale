@@ -16,7 +16,7 @@ docs/ is for outdated inane info ;p
 
 include/ is all the headers and all that jazz.
 
-The conf file is useless ATM.
+unused_code/ is code that isn't intergrated into this project.
 
 Stuff nobody cares for:
 -----------------------
