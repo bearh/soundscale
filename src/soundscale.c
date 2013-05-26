@@ -77,6 +77,9 @@ int main(int argc,char *argv[]){
 			if(atoi(user_select_device) < device_num && atoi(user_select_device) >= 0){
 				device_chosen = atoi(user_select_device);
 				input_stream_param.device = device_chosen;
+			} else {
+				// Maybe ask user?
+				input_stream_param.device = device_chosen  = Pa_GetDefaultInputDevice();
 			}
 		} else if(input_wanted == false){
 			return SUCCESS;
@@ -96,7 +99,5 @@ int main(int argc,char *argv[]){
 	status_message(stat_general,"Using device:");
 	device_info = Pa_GetDeviceInfo(input_stream_param.device);
 	status_message(stat_general,(char *)device_info->name);
-	
-
 	return SUCCESS;
 }
